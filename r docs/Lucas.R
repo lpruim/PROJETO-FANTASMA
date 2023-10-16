@@ -56,7 +56,7 @@ ggplot(meu_dataframe) +
   geom_bar(stat = "identity", 
            fill = "#A11D21",
            width = 0.5) +
-  labs(x = "Categorias", y = "Faturamento") +
+  labs(x = "Categorias", y = "Faturamento em R$") +
   ggtitle("Faturamento por categoria") +
   theme_estat() +  
   coord_cartesian(ylim = c(0, 20000))  
