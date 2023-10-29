@@ -44,8 +44,6 @@ theme_estat <- function(...) {
 
 
 
-library(ggplot2)
-
 meu_dataframe <- data.frame(
   Coluna1 = c("Kids' Fashion", "Men's Fashion", "Women's Fashion"),  
   Coluna2 = c(19333, 17261, 18219) 
@@ -68,10 +66,7 @@ ggsave("hist_uni_porc.pdf", width = 158, height = 93, units = "mm")
 
 #Análise 3
 
-bancod<-read.csv("banco/vendas.csv")
 
-install.packages("dplyr")
-library(dplyr)
 
 
 
@@ -85,36 +80,7 @@ dados_ana3 <- dados_ana3[complete.cases(dados_ana3$Color), ]
 
 dados_ana2 <- subset(vendas, Category =="Women's Fashion")
 
-
 dados_ana2 <- dados_ana2[complete.cases(dados_ana2$Color), ]
-
-
-
-install.packages("ggplot2")
-library(ggplot2)
-cores_estat <- c("#A11D21", "#003366", "#CC9900", "#663333", "#FF6600", "#CC9966", "#999966", "#006606", "#008091", "#041835", "#666666")
-
-theme_estat <- function(...) {
-  theme <- ggplot2::theme_bw() +
-    ggplot2::theme(
-      axis.title.y = ggplot2::element_text(colour = "black", size = 12),
-      axis.title.x = ggplot2::element_text(colour = "black", size = 12),
-      axis.text = ggplot2::element_text(colour = "black", size = 9.5),
-      panel.border = ggplot2::element_blank(),
-      axis.line = ggplot2::element_line(colour = "black"),
-      legend.position = "top",
-      ...
-    )
-  
-  return(
-    list(
-      theme,
-      scale_fill_manual(values = cores_estat),
-      scale_colour_manual(values = cores_estat)
-    )
-  )
-}
-
 
 contagem1 <- dados_ana3 %>% 
   group_by(Color) %>%
@@ -137,9 +103,6 @@ ggplot(contagem1) +
   labs(title = "Roupas masculinas")
 
 ggsave("setor.pdf", width = 158, height = 93, units = "mm")
-
-
-
 
 
 
