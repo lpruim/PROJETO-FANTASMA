@@ -1,24 +1,35 @@
 #Análise 1
 
 bancod<-read.csv("banco/vendas.csv")
+banco1 <- bancod[!is.na(bancod$Price), ] 
 
-install.packages("dplyr")
+
 library(dplyr)
-
-
-banco1 <- bancod[!is.na(bancod$Price), ]
-
-
-
-faturamento_por_categoria1 <- banco1%>%
-  group_by(Category) %>%     
-  summarize(Faturamento_ = sum(Price))  
-print(faturamento_por_categoria1)
-write.csv(faturamento_por_categoria1, file = "faturamento.csv", row.names = FALSE)
-
-
-install.packages("ggplot2")
+library(lubridate)
 library(ggplot2)
+banco1 <- banco[!is.na(banco$Price), ]
+banco1 <- banco[!is.na(banco$Data.Venda), ]
+banco1 <- banco[!is.na(banco$Category), ]
+
+banco1$Data.Venda <-  mdy(banco1$Data.Venda)
+
+banco1$mes <- month(banco1$Data.Venda)
+
+banco_mes<- banco1 %>% 
+  filter(!is.na(Price)) %>% 
+  filter(!is.na(mes)) %>% 
+  group_by(mes, Category) %>% 
+  summarise(Faturamento= sum(Price)) 
+
+colnames(banco_mes)[colnames(banco_mes) == "Category"] <- "Categorias"
+
+
+banco_mes$Categorias <- gsub("Kids' Fashion", "Infantil", banco_mes$Categorias, ignore.case = TRUE)
+banco_mes$Categorias <- gsub("Women's Fashion", "Feminino", banco_mes$Categorias, ignore.case = TRUE)
+banco_mes$Categorias <- gsub("Men's Fashion", "Masculino", banco_mes$Categorias, ignore.case = TRUE)
+
+
+
 cores_estat <- c("#A11D21", "#003366", "#CC9900", "#663333", "#FF6600", "#CC9966", "#999966", "#006606", "#008091", "#041835", "#666666")
 
 theme_estat <- function(...) {
@@ -43,26 +54,16 @@ theme_estat <- function(...) {
 }
 
 
-
-meu_dataframe <- data.frame(
-  Coluna1 = c("Kids' Fashion", "Men's Fashion", "Women's Fashion"),  
-  Coluna2 = c(19333, 17261, 18219) 
-)
-
-print(meu_dataframe)
-
-ggplot(meu_dataframe) +
-  aes(x = Coluna1, y = Coluna2) +
-  geom_bar(stat = "identity", 
-           fill = "#A11D21",
-           width = 0.5) +
-  labs(x = "Categorias", y = "Faturamento em R$") +
-  ggtitle("Faturamento por categoria") +
-  theme_estat() +  
-  coord_cartesian(ylim = c(0, 20000))  
-
-ggsave("hist_uni_porc.pdf", width = 158, height = 93, units = "mm")
-
+ggplot(banco_mes) +
+  aes(x = mes, y = Faturamento, group = Categorias, colour = Categorias) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  scale_colour_manual(name = "Produto", labels = c("Homens", "Mulheres","Crianças")) +
+  labs(x = "Meses", y = "Faturamento em R$") +
+  scale_x_continuous(breaks = seq(1, 12, by = 1), limits = c(1, 12)) +
+  scale_y_continuous(limits = c(0, 4500), breaks = seq(0, 4500, by = 500)) + 
+  theme_estat()
+ggsave("series_grupo1.pdf", width = 158, height = 93, units = "mm")
 
 #Análise 3
 
